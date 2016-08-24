@@ -58,6 +58,55 @@ class StoryStatus extends Command
     public function handle()
     {
 
+        $slackUsernames = [
+            'Amanda Whiting'             => 'awhiting',
+            'Andrew Beaujon'             => 'abeaujon',
+            'Andrew Propp '              => 'apropp',
+            'Ann Limpert'                => 'annlimpert',
+            'Anna Spiegel'               => 'aspiegel',
+            'Benjamin Freed'             => 'brfreed',
+            'Briana Thomas'              => 'bthomas',
+            'Caroline Cunningham'        => 'carolinecunningham',
+            'Chris Combs'                => 'chriscombs',
+            'Claire Donnelly'            => 'cdonnelly',
+            'Dean Essner'                => 'deanessner',
+            'Diane Rice'                 => 'dianevr',
+            'Elaina Plott'               => 'eplott',
+            'Evy Mages'                  => 'evy',
+            'Greta Weber'                => 'gweber',
+            'Hayley Phillips'            => 'hay_phillips',
+            'Hillary Kelly'              => 'hillary_',
+            'Jackson Knapp'              => 'jknapp',
+            'Jason Lancaster'            => 'lancaster',
+            'Jeff Elkins'                => 'jelkins',
+            'Jennifer Ortiz'             => 'jortiz',
+            'Jessi Taff'                 => 'jtaff',
+            'Jessica Sidman'             => 'jsidman',
+            'Kellie Duff'                => 'kellieduff',
+            'Kristen Hinman'             => 'khinman',
+            'Lauren Joseph'              => 'laurenjoseph',
+            'Luke Mullins'               => 'mullinsluke ',
+            'Mandy Zou'                  => 'mandyzou',
+            'Marisa Dunn'                => 'marisadunn',
+            'Meredith Ellison'           => 'meredith',
+            'Michael Gaynor'             => 'mgaynor',
+            'Michael Schaffer'           => 'mikeschaffer',
+            'Mollie Bloudoff-Indelicato' => 'mollie',
+            'Patrick Leddy'              => 'pleddy',
+            'Paul Chernoff'              => 'pchernoff',
+            'Philip Garrity'             => 'philipgarrity',
+            'Ryan Weisser'               => 'rweisser',
+            'Sarah Lindner'              => 'slindner',
+            'Sarah Stodder'              => 'sstodds',
+            'Sarah Zlotnick'             => 'sarahzlot',
+            'Sherri Dalphonse'           => 'sdalphonse',
+            'Sydney MaHan'               => 'smahan',
+            'Tom Shafer'                 => 'tomtom',
+            'Vanessa McDonald'           => 'vmcdonald',
+            'Will Grunewald'             => 'will_grunewald',
+            'Marisa M. Kashino'          => 'mkashino',
+            'Phong Nguyen'               => 'hello_phong',
+        ];
         //$optParams = array(
         //    'dimensions' => 'rt:medium');
         //$results = Analytics::getAnalyticsService()->data_realtime->get(
@@ -90,15 +139,22 @@ class StoryStatus extends Command
             $appName          = 'New alert from the Washingtonian Traffic Cop.';
             $niceThings       = ["Awesome!", "Sweet!", "Good stuff.", "Nice!"];
             $reallyNiceThings = ["Boom!", "Great job!", "Wow!", "Holy cow!"];
+
+            echo $shareTwitter = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
+            echo $shareFacebook = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
+            $links = $shareTwitter . " | " . $shareFacebook;
+            //$userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#webonauts-';
+
+            $userOrChannel = '#webonauts-';
             if ($days == 1 && $pageViews > 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback' => $fallback,
                     'text'     => "Hey " . $row[2] . ", your post " . $url . " has already gotten `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings,
-                            1)] . " Keep it going by sharing your post!",
+                            1)] . " Keep it going by sharing your post!  \n\n $links.",
 
                     "mrkdwn_in"   => ["text", "pretext"],
-                    //Share on Twitter, https://twitter.com/home?status=" .  $pageTitle . " " . $url . " via @washingtonian"
+                    //Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
                     //"Share on Facebook", url: "
                     //'actions'     => [
                     //    [
@@ -129,35 +185,35 @@ class StoryStatus extends Command
                     //    ],
                     //],
                     'footer'      => 'Washingtonian Web Team',
-                    'footer_icon' => 'https://platform.slack-edge.com/img/default_application_icon.png',
+                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
-                ])->to('#general')->send($appName);
+                ])->to($userOrChannel)->send($appName);
             }
 
             if ($hours == 1 && $pageViews < 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
-                    'fallback'  => $fallback,
-                    'text'      => 'Hey ' . $row[2] . ', Your post ' . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . ' pageviews in an hour. ' . $niceThings[array_rand($niceThings,
+                    'fallback'    => $fallback,
+                    'text'        => 'Hey ' . $row[2] . ', Your post ' . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . ' pageviews in an hour. ' . $niceThings[array_rand($niceThings,
                             1)] . ' Can you keep it going by sharing the post!',
-                    "mrkdwn_in" => ["text", "pretext"],
+                    "mrkdwn_in"   => ["text", "pretext"],
                     'footer'      => 'Washingtonian Web Team',
-                    'footer_icon' => 'https://platform.slack-edge.com/img/default_application_icon.png',
+                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
-                ])->to('@tomtom')->send($appName);
+                ])->to($userOrChannel)->send($appName);
             }
 
             if ($hours == 1 && $pageViews > 5000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
-                    'fallback'  => $fallback,
-                    'text'      => 'Hey ' . $row[2] . ', your post ' . $url . ' gotten `' . $row['pageviews'] . '` pageviews in an hour. ' . $reallyNiceThings[array_rand($reallyNiceThings,
+                    'fallback'    => $fallback,
+                    'text'        => 'Hey ' . $row[2] . ', your post ' . $url . ' gotten `' . $row['pageviews'] . '` pageviews in an hour. ' . $reallyNiceThings[array_rand($reallyNiceThings,
                             1)],
-                    "mrkdwn_in" => ["text", "pretext"],
+                    "mrkdwn_in"   => ["text", "pretext"],
                     'footer'      => 'Washingtonian Web Team',
-                    'footer_icon' => 'https://platform.slack-edge.com/img/default_application_icon.png',
+                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
-                ])->to('@tomtom')->send($appName);
+                ])->to($userOrChannel)->send($appName);
             }
 
             if ($hours == 6 && $pageViews > 1000) {
@@ -166,17 +222,14 @@ class StoryStatus extends Command
                     'fallback' => $fallback,
                     'text'     => 'Hey ' . $row[2] . ', your post ' . $url . ' is ' . $hours . ' hours old and gotten ' . $row['pageviews'] . ' pageviews. Any tweaks you could make to the headline or maybe even share an image?',
 
-                    "mrkdwn_in" => ["text", "pretext"],
+                    "mrkdwn_in"   => ["text", "pretext"],
                     'footer'      => 'Washingtonian Web Team',
-                    'footer_icon' => 'https://platform.slack-edge.com/img/default_application_icon.png',
+                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
-                ])->to('@tomtom')->send($appName);
+                ])->to($userOrChannel)->send($appName);
             }
-            //A) your post is a day old and got < 1000 pageviews. Can you share it on your social networks?
-            //B) your post got 1000 pageviews in an hour. It's on fire! Can you keep it going by sharing it on your social networks?
-            //C) your post got 5000 pageviews in an hour. Great job!
-            //D) your post is six hours old and got < 1000 pageviews. Any tweaks you could make to the headline or share image
-
         }
     }
 }
+
+
