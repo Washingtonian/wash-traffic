@@ -166,7 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Spatie\Analytics\AnalyticsServiceProvider::class,
         //
 
         /*
@@ -225,6 +225,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
     ],
 
 ];
