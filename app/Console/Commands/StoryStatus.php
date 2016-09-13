@@ -152,7 +152,7 @@ class StoryStatus extends Command
             //$userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#webonauts-';
 
             $userOrChannel = '#webonauts-';
-            if ($hours < 12 && $hours < 6 && $pageViews > 1000) {
+            if ($hours == 16 && $pageViews > 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback' => $fallback,
@@ -195,11 +195,11 @@ class StoryStatus extends Command
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
 
-                if ($hours < 12 && $hours > 6 && $pageViews < 1000) {
+                if ($hours < 16 && $pageViews < 1000) {
                     $this->slackClient->from($from)->attach([
                         //'author_icon' => ':washingtonian:',
                         'fallback'    => $fallback,
-                        'text'        => 2 . 'Hey ' . $row[2] . ', Your post ' . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . ' pageviews in an hour. ' . $niceThings[array_rand($niceThings,
+                        'text'        => 2 . 'Hey ' . $row[2] . ', Your post ' . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . ' pageviews. ' . $niceThings[array_rand($niceThings,
                                 1)] . ' Can you keep it going by sharing the post!',
                         "mrkdwn_in"   => ["text", "pretext"],
                         'footer'      => 'Washingtonian Web Team',
@@ -209,11 +209,11 @@ class StoryStatus extends Command
                 }
             }
 
-            if ($hours < 12 && $hours > 6 && $pageViews > 5000) {
+            if ($hours == 16 && $pageViews > 5000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback'    => $fallback,
-                    'text'        => 3 . 'Hey ' . $row[2] . ', your post ' . $url . ' gotten `' . $row['pageviews'] . '` pageviews in an hour. ' . $reallyNiceThings[array_rand($reallyNiceThings,
+                    'text'        => 3 . 'Hey ' . $row[2] . ', your post ' . $url . ' gotten `' . $row['pageviews'] . '` pageviews. ' . $reallyNiceThings[array_rand($reallyNiceThings,
                             1)],
                     "mrkdwn_in"   => ["text", "pretext"],
                     'footer'      => 'Washingtonian Web Team',
@@ -222,7 +222,7 @@ class StoryStatus extends Command
                 ])->to($userOrChannel)->send($appName);
             }
 
-            if ($hours < 12 && $hours > 6 && $pageViews > 1000) {
+            if ($hours == 16 && $pageViews < 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback' => $fallback,
