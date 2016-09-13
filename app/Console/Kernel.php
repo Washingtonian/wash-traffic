@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+         $schedule->command('index:weddings')
+                  ->hourly();
          $schedule->command('story:notify')
                   ->hourly();
     }
