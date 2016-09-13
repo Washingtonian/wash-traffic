@@ -138,7 +138,6 @@ class StoryStatus extends Command
             if ($hours > 48) {
                 continue;
             }
-            echo $row['humanDate'] . PHP_EOL;
 
             $pageTitle        = str_replace(' | Washingtonian', '', $pageTitle);
             $url              = '<https://www.washingtonian.com' . $row[0] . '|' . $pageTitle . '>';
