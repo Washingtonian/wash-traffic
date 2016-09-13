@@ -49,7 +49,7 @@ class AlgoliaWeddingIndex extends Command
         $index = $this->client->initIndex("dev_WEDDINGS");
 
         $posts = Post::taxonomy('provider_type', 'wedding-vendors')->status('publish')->get()->reject(function ($item) {
-            return (boolean) $item->meta->enhanced_check != true;
+            return (boolean)$item->meta->enhanced_check != true;
         });
 
         if ($posts->count() > 0) {
@@ -58,14 +58,12 @@ class AlgoliaWeddingIndex extends Command
 
                     $indexDate = Carbon::now();
 
-                    $data = array(
+                    $data = [
                         'sorted_date' => $indexDate->toDateTimeString(),
                         'sort_order'  => mt_rand(),
                         'objectID'    => $item->meta->agolia_id,
-                    );
-
-                    $index->partialUpdateObjects($data, 'objectID', false);
-
+                    ];
+                    $index->partialUpdateObject($data, 'objectID', false);
                 }
             }
         }
