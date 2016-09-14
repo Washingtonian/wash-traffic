@@ -129,7 +129,7 @@ class StoryStatus extends Command
             //$dt->setTimezone('America/New_York');
             $row['humanDate'] = $dt->format('l jS \\of F Y h:i:s A');
             $days             = $dt->diffInDays($current);
-            $hours = $dt->diffInHours($current);
+            $hours            = $dt->diffInHours($current);
             $pageTitle        = $row[3];
             $pageViews        = $row[4];
             $row['days']      = $days;
@@ -152,12 +152,24 @@ class StoryStatus extends Command
             //$userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#webonauts-';
 
             $userOrChannel = '#webonauts-';
+
+            if ($hours == 16 && $pageViews > 5000) {
+                $this->slackClient->from($from)->attach([
+                    //'author_icon' => ':washingtonian:',
+                    'fallback'    => $fallback,
+                    'text'        => 3 . "Hey " . $row[2] . ", your post " . $url . " gotten " . $row['pageviews'] . " pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings, 1)] . " \n\n $links.\"",
+                    "mrkdwn_in"   => ["text", "pretext"],
+                    'footer'      => 'Washingtonian Web Team',
+                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+                    'timestamp'   => new \DateTime(),
+                ])->to($userOrChannel)->send($appName);
+            }
+
             if ($hours == 16 && $pageViews > 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback' => $fallback,
-                    'text'     => 1 . "Hey " . $row[2] . ", your post " . $url . " has already gotten `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings,
-                            1)] . " Keep it going by sharing your post!  \n\n $links.",
+                    'text'     => 1 . "Hey " . $row[2] . ", your post " . $url . " has already gotten `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Keep it going by sharing your post!  \n\n $links.",
 
                     "mrkdwn_in"   => ["text", "pretext"],
                     //Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
@@ -194,46 +206,30 @@ class StoryStatus extends Command
                     'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
-
-                if ($hours < 16 && $pageViews < 1000) {
-                    $this->slackClient->from($from)->attach([
-                        //'author_icon' => ':washingtonian:',
-                        'fallback'    => $fallback,
-                        'text'        => 2 . 'Hey ' . $row[2] . ', Your post ' . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . ' pageviews. ' . $niceThings[array_rand($niceThings,
-                                1)] . ' Can you keep it going by sharing the post!',
-                        "mrkdwn_in"   => ["text", "pretext"],
-                        'footer'      => 'Washingtonian Web Team',
-                        'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
-                        'timestamp'   => new \DateTime(),
-                    ])->to($userOrChannel)->send($appName);
-                }
             }
-
-            if ($hours == 16 && $pageViews > 5000) {
-                $this->slackClient->from($from)->attach([
-                    //'author_icon' => ':washingtonian:',
-                    'fallback'    => $fallback,
-                    'text'        => 3 . 'Hey ' . $row[2] . ', your post ' . $url . ' gotten `' . $row['pageviews'] . '` pageviews. ' . $reallyNiceThings[array_rand($reallyNiceThings,
-                            1)],
-                    "mrkdwn_in"   => ["text", "pretext"],
-                    'footer'      => 'Washingtonian Web Team',
-                    'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
-                    'timestamp'   => new \DateTime(),
-                ])->to($userOrChannel)->send($appName);
-            }
-
             if ($hours == 16 && $pageViews < 1000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
-                    'fallback' => $fallback,
-                    'text'     => 4 . 'Hey ' . $row[2] . ', your post ' . $url . ' is ' . $hours . ' hours old and gotten ' . $row['pageviews'] . ' pageviews. Any tweaks you could make to the headline or maybe even share an image?',
-
+                    'fallback'    => $fallback,
+                    'text'        => 2 . "Hey " . $row[2] . ", Your post " . $url . 'is on fire! It\'s gotten ' . $row['pageviews'] . " pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Can you keep it going by sharing the post!  \n\n $links.",
                     "mrkdwn_in"   => ["text", "pretext"],
                     'footer'      => 'Washingtonian Web Team',
                     'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
             }
+
+            //if ($hours == 16 && $pageViews < 1000) {
+            //    $this->slackClient->from($from)->attach([
+            //        //'author_icon' => ':washingtonian:',
+            //        'fallback' => $fallback,
+            //        'text'     => 4 . "Hey " . $row[2] . ", your post " . $url . " is " . $hours . " hours old and gotten " . $row['pageviews'] . " pageviews. Any tweaks you could make to the headline or maybe even share an image?  \n\n $links.",
+            //        "mrkdwn_in"   => ["text", "pretext"],
+            //        'footer'      => 'Washingtonian Web Team',
+            //        'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+            //        'timestamp'   => new \DateTime(),
+            //    ])->to($userOrChannel)->send($appName);
+            //}
         }
     }
 }
