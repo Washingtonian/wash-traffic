@@ -63,7 +63,7 @@ class AlgoliaWeddingIndex extends Command
                         'sort_order'  => mt_rand(),
                         'objectID'    => $item->meta->agolia_id,
                     ];
-                    $index->partialUpdateObject($data, 'objectID', false);
+                    $index->partialUpdateObject($data, false);
                 }
             }
         }
