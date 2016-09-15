@@ -130,14 +130,14 @@ class StoryStatus extends Command
             if ($hours > 48) {
                 continue;
             }
-            
+
             if ($hours == 16 && $pageViews > 5000) {
                 $this->slackClient->from($from)->attach([
                     //'author_icon' => ':washingtonian:',
                     'fallback'    => $fallback,
                     'text'        => "Hey " . $row[2] . ", your post " . $url . " gotten " . $row['pageviews'] . " pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings, 1)] . " \n\n $links.\"",
                     "mrkdwn_in"   => ["text", "pretext"],
-                    'footer'      => 'Washingtonian Web Team',
+                    'footer'      => 'Washingtonian Web Team  - Message 1',
                     'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
@@ -180,7 +180,7 @@ class StoryStatus extends Command
                     //        ],
                     //    ],
                     //],
-                    'footer'      => 'Washingtonian Web Team',
+                    'footer'      => 'Washingtonian Web Team - Message 2',
                     'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
@@ -192,7 +192,7 @@ class StoryStatus extends Command
                     'fallback'    => $fallback,
                     'text'        => "Hey " . $row[2] . ", Your post " . $url . ' is on fire! It\'s gotten ' . $row['pageviews'] . " pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Can you keep it going by sharing the post!  \n\n $links.",
                     "mrkdwn_in"   => ["text", "pretext"],
-                    'footer'      => 'Washingtonian Web Team',
+                    'footer'      => 'Washingtonian Web Team - Message 3',
                     'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                     'timestamp'   => new \DateTime(),
                 ])->to($userOrChannel)->send($appName);
