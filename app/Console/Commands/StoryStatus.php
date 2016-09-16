@@ -165,8 +165,8 @@ class StoryStatus extends Command
         $url              = '<https://www.washingtonian.com' . $row[0] . '|' . $pageTitle . '>';
         $fallback         = 'We wanted to tell you something, but then we forgot what to say. Holler at somebody technical, k?';
         $appName          = 'New alert from the Washingtonian Traffic Cop.';
-        $niceThings       = ["Awesome!", "Sweet!", "Good stuff.", "Nice!"];
-        $reallyNiceThings = ["Boom!", "Great job!", "Wow!", "Holy cow!"];
+        $niceThings       = ["Awesome!", "Sweet!", "Good stuff.", "Nice!", "Great!", "Super!", "Peachy keen!", "Cool!", "Excellent!", "Ace!", "Solid!", "That's A-OK!", "Very fine!", "That's hunky dory!"];
+        $reallyNiceThings = ["Boom!", "Great job!", "Wow!", "Holy cow!", "That's great!", "Most excellent!", "Very nice!", "That's the cat's pajamas!", "Wonderful!", "Commendable!", "Out of sight!", "Out of the park!", "We're over the moon!"];
         $shareTwitter     = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
         $shareFacebook    = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
         $links            = $shareTwitter . " | " . $shareFacebook;
@@ -195,7 +195,7 @@ class StoryStatus extends Command
             $this->slackClient->from($from)->attach([
                 //'author_icon' => ':washingtonian:',
                 'fallback'    => $fallback,
-                'text'        => "Hey " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings, 1)] ." \n\n ".$links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings, 1)] ." \n\n ".$links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team  - 1',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
@@ -223,7 +223,7 @@ class StoryStatus extends Command
             $this->slackClient->from($from)->attach([
                 //'author_icon' => ':washingtonian:',
                 'fallback' => $fallback,
-                'text'     => "Hey " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Keep it going by sharing your post!  \n\n". $links,
+                'text'     => "Hey, " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Keep it going by sharing your post!  \n\n". $links,
 
                 "mrkdwn_in"   => ["text", "pretext"],
                 //Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
@@ -282,7 +282,7 @@ class StoryStatus extends Command
             $this->slackClient->from($from)->attach([
                 //'author_icon' => ':washingtonian:',
                 'fallback'    => $fallback,
-                'text'        => "Hey " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and gotten `" . $row['pageviews'] . "` pageviews. Any tweaks you could make to the headline or maybe even share an image?". $links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image?". $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
@@ -291,5 +291,3 @@ class StoryStatus extends Command
         }
     }
 }
-
-
