@@ -129,7 +129,7 @@ class StoryStatus extends Command
             'Kristen Hinman'             => 'khinman',
             'Lauren Joseph'              => 'laurenjoseph',
             'Luke Mullins'               => 'mullinsluke ',
-            'Mandy Zou'                  => 'mandyzou',
+            'Manyun Zou'                 => 'mandyzou',
             'Marisa Dunn'                => 'marisadunn',
             'Meredith Ellison'           => 'meredith',
             'Michael Gaynor'             => 'mgaynor',
