@@ -200,7 +200,7 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team  - 1',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->send($appName);
+            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
         }
     }
 
@@ -259,7 +259,7 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team - 2',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->send($appName);
+            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
         }
     }
 
@@ -287,7 +287,7 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->send($appName);
+            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
         }
     }
 }
