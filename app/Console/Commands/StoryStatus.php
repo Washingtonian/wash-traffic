@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Maknz\Slack\Client;
 use Spatie\Analytics\AnalyticsFacade as Analytics;
 use Spatie\Analytics\Period;
@@ -59,7 +58,6 @@ class StoryStatus extends Command
     public function handle()
     {
 
-
         $response = Analytics::performQuery(Period::create((new \DateTime('yesterday')), new \DateTime('today')), 'ga:pageviews', [
             'dimensions'  => 'ga:pagePath,ga:dimension4,ga:dimension5,ga:pageTitle',
             'sort'        => '-ga:dimension4',
@@ -88,6 +86,8 @@ class StoryStatus extends Command
             $this->messageTwo($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
             $this->messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
+            
+            $this->messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
         }
     }
@@ -165,12 +165,42 @@ class StoryStatus extends Command
         $url              = '<https://www.washingtonian.com' . $row[0] . '|' . $pageTitle . '>';
         $fallback         = 'We wanted to tell you something, but then we forgot what to say. Holler at somebody technical, k?';
         $appName          = 'New alert from the Washingtonian Traffic Cop.';
-        $niceThings       = ["Awesome!", "Sweet!", "Good stuff.", "Nice!", "Great!", "Super!", "Peachy keen!", "Cool!", "Excellent!", "Ace!", "Solid!", "That's A-OK!", "Very fine!", "That's hunky dory!"];
-        $reallyNiceThings = ["Boom!", "Great job!", "Wow!", "Holy cow!", "That's great!", "Most excellent!", "Very nice!", "That's the cat's pajamas!", "Wonderful!", "Commendable!", "Out of sight!", "Out of the park!", "We're over the moon!"];
+        $niceThings       = [
+            "Awesome!",
+            "Sweet!",
+            "Good stuff.",
+            "Nice!",
+            "Great!",
+            "Super!",
+            "Peachy keen!",
+            "Cool!",
+            "Excellent!",
+            "Ace!",
+            "Solid!",
+            "That's A-OK!",
+            "Very fine!",
+            "That's hunky dory!",
+        ];
+        $reallyNiceThings = [
+            "Boom!",
+            "Great job!",
+            "Wow!",
+            "Holy cow!",
+            "That's great!",
+            "Most excellent!",
+            "Very nice!",
+            "That's the cat's pajamas!",
+            "Wonderful!",
+            "Commendable!",
+            "Out of sight!",
+            "Out of the park!",
+            "We're over the moon!",
+        ];
         $shareTwitter     = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
         $shareFacebook    = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
         $links            = $shareTwitter . " | " . $shareFacebook;
         $userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#webonauts-';
+
         //$userOrChannel = '#webonauts-';
 
         return [$row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel];
@@ -191,11 +221,11 @@ class StoryStatus extends Command
      */
     private function messageOne($hours, $pageViews, $from, $fallback, $row, $url, $reallyNiceThings, $links, $userOrChannel, $appName)
     {
-        if ( $pageViews > 5000) {
+        if ($pageViews > 5000) {
             $this->slackClient->from($from)->attach([
-                //'author_icon' => ':washingtonian:',
                 'fallback'    => $fallback,
-                'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings, 1)] ." \n\n ".$links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings,
+                        1)] . " \n\n " . $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team  - 1',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
@@ -221,9 +251,9 @@ class StoryStatus extends Command
     {
         if ($pageViews > 1000) {
             $this->slackClient->from($from)->attach([
-                //'author_icon' => ':washingtonian:',
                 'fallback' => $fallback,
-                'text'     => "Hey, " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings, 1)] . " Keep it going by sharing your post!  \n\n". $links,
+                'text'     => "Hey, " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings,
+                        1)] . " Keep it going by sharing your post!  \n\n" . $links,
 
                 "mrkdwn_in"   => ["text", "pretext"],
                 //Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
@@ -278,16 +308,43 @@ class StoryStatus extends Command
      */
     private function messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName)
     {
-        if ( $pageViews > 50 &&  $pageViews < 1000) {
+        if ($pageViews > 50 && $pageViews < 1000) {
             $this->slackClient->from($from)->attach([
-                //'author_icon' => ':washingtonian:',
                 'fallback'    => $fallback,
-                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image?". $links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image? \n\n" . $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
             ])->to($userOrChannel)->to('#trafficcop')->send($appName);
         }
+    }
+
+
+    /**
+     * @param $hours
+     * @param $pageViews
+     * @param $from
+     * @param $fallback
+     * @param $row
+     * @param $url
+     * @param $reallyNiceThings
+     * @param $links
+     * @param $userOrChannel
+     * @param $appName
+     */
+    private function messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $reallyNiceThings, $links, $userOrChannel, $appName)
+    {
+
+        $this->slackClient->from($from)->attach([
+            'fallback'    => $fallback,
+            'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings,
+                    1)] . " \n\n " . $links,
+            "mrkdwn_in"   => ["text", "pretext"],
+            'footer'      => 'Washingtonian Web Team  - Debug',
+            'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+            'timestamp'   => new \DateTime(),
+        ])->to('#trafficcop')->send($appName);
+
     }
 }
