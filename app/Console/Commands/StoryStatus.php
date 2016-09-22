@@ -86,13 +86,12 @@ class StoryStatus extends Command
             $this->messageTwo($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
             $this->messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
-            
-            $this->messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
+
+            //$this->messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
         }
     }
-
-
+    
     /**
      * @param $row
      * @param $current
@@ -117,7 +116,7 @@ class StoryStatus extends Command
             'Elaina Plott'               => 'eplott',
             'Evy Mages'                  => 'evy',
             'Greta Weber'                => 'gweber',
-            'Hayley Phillips'            => 'hay_phillips',
+            'Hayley Garrison Phillips'   => 'hay_phillips',
             'Hillary Kelly'              => 'hillary_',
             'Jackson Knapp'              => 'jknapp',
             'Jason Lancaster'            => 'lancaster',
@@ -230,7 +229,18 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team  - 1',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
+            ])->to($userOrChannel)->send($appName);
+
+            $this->slackClient->from($from)->attach([
+                'fallback'    => $fallback,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings,
+                        1)] . " \n\n " . $links,
+                "mrkdwn_in"   => ["text", "pretext"],
+                'footer'      => 'Washingtonian Web Team  - 1',
+                'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+                'timestamp'   => new \DateTime(),
+            ])->to($userOrChannel)->send($appName);
+
         }
     }
 
@@ -256,40 +266,22 @@ class StoryStatus extends Command
                         1)] . " Keep it going by sharing your post!  \n\n" . $links,
 
                 "mrkdwn_in"   => ["text", "pretext"],
-                //Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
-                //"Share on Facebook", url: "
-                //'actions'     => [
-                //    [
-                //        "name"    => "facebook",
-                //        "text"    => "Share on Facebook",
-                //        "style"   => "success",
-                //        "type"    => "button",
-                //        "value"   => "https://www.facebook.com/sharer/sharer.php?u=" . $url,
-                //        "confirm" => [
-                //            "title"        => "Are you sure?",
-                //            "text"         => "Do you want to share this post with facebook?",
-                //            "ok_text"      => "Yes",
-                //            "dismiss_text" => "No",
-                //        ],
-                //    ],
-                //    [
-                //        "name"    => "twitter",
-                //        "text"    => "Share on Twitter",
-                //        "style"   => "success",
-                //        "type"    => "button",
-                //        "value"   => "https://twitter.com/home?status=" .  $pageTitle . " " . $url . " via @washingtonian",
-                //        "confirm" => [
-                //            "title"        => "Are you sure?",
-                //            "text"         => "Do you want to share this post with twitter?",
-                //            "ok_text"      => "Yes",
-                //            "dismiss_text" => "No",
-                //        ],
-                //    ],
-                //],
                 'footer'      => 'Washingtonian Web Team - 2',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
+            ])->to($userOrChannel)->send($appName);
+
+            $this->slackClient->from($from)->attach([
+                'fallback' => $fallback,
+                'text'     => "Hey, " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings,
+                        1)] . " Keep it going by sharing your post!  \n\n" . $links,
+
+                "mrkdwn_in"   => ["text", "pretext"],
+                'footer'      => 'Washingtonian Web Team - 2',
+                'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+                'timestamp'   => new \DateTime(),
+            ])->to('#trafficcop')->send($appName);
+
         }
     }
 
@@ -316,7 +308,17 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->to('#trafficcop')->send($appName);
+            ])->to($userOrChannel)->send($appName);
+
+            $this->slackClient->from($from)->attach([
+                'fallback'    => $fallback,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image? \n\n" . $links,
+                "mrkdwn_in"   => ["text", "pretext"],
+                'footer'      => 'Washingtonian Web Team - 3',
+                'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
+                'timestamp'   => new \DateTime(),
+            ])->to('#trafficcop')->send($appName);
+
         }
     }
 
@@ -348,3 +350,34 @@ class StoryStatus extends Command
 
     }
 }
+
+//Share on Twitter, https://twitter.com/home?status=" . $pageTitle . " " . $url . " via @washingtonian"
+//"Share on Facebook", url: "
+//'actions'     => [
+//    [
+//        "name"    => "facebook",
+//        "text"    => "Share on Facebook",
+//        "style"   => "success",
+//        "type"    => "button",
+//        "value"   => "https://www.facebook.com/sharer/sharer.php?u=" . $url,
+//        "confirm" => [
+//            "title"        => "Are you sure?",
+//            "text"         => "Do you want to share this post with facebook?",
+//            "ok_text"      => "Yes",
+//            "dismiss_text" => "No",
+//        ],
+//    ],
+//    [
+//        "name"    => "twitter",
+//        "text"    => "Share on Twitter",
+//        "style"   => "success",
+//        "type"    => "button",
+//        "value"   => "https://twitter.com/home?status=" .  $pageTitle . " " . $url . " via @washingtonian",
+//        "confirm" => [
+//            "title"        => "Are you sure?",
+//            "text"         => "Do you want to share this post with twitter?",
+//            "ok_text"      => "Yes",
+//            "dismiss_text" => "No",
+//        ],
+//    ],
+//],
