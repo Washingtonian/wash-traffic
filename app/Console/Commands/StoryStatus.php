@@ -30,12 +30,20 @@ class StoryStatus extends Command
      */
     protected $client;
 
+    /**
+     *
+     */
+    protected $sent;
+
 
     /**
      * Create a new command instance.
      */
     public function __construct()
     {
+
+        $this->sent = false;
+
         $settings          = [
             'unfurl_links'            => true,
             'unfurl_media'            => true,
@@ -88,10 +96,11 @@ class StoryStatus extends Command
             $this->messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
             //$this->messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
-
+            $this->sent = false;
         }
     }
-    
+
+
     /**
      * @param $row
      * @param $current
@@ -198,7 +207,7 @@ class StoryStatus extends Command
         $shareTwitter     = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
         $shareFacebook    = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
         $links            = $shareTwitter . " | " . $shareFacebook;
-        $userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#webonauts-';
+        $userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#trafficcop';
 
         //$userOrChannel = '#webonauts-';
 
@@ -220,7 +229,7 @@ class StoryStatus extends Command
      */
     private function messageOne($hours, $pageViews, $from, $fallback, $row, $url, $reallyNiceThings, $links, $userOrChannel, $appName)
     {
-        if ($pageViews > 5000) {
+        if ($pageViews > 5000 && $this->sent == false) {
             $this->slackClient->from($from)->attach([
                 'fallback'    => $fallback,
                 'text'        => "Hey, " . $row[2] . ", your post " . $url . " gotten about `" . $row['pageviews'] . "` pageviews. " . $reallyNiceThings[array_rand($reallyNiceThings,
@@ -239,8 +248,9 @@ class StoryStatus extends Command
                 'footer'      => 'Washingtonian Web Team  - 1',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
                 'timestamp'   => new \DateTime(),
-            ])->to($userOrChannel)->send($appName);
+            ])->to('#trafficcop')->send($appName);
 
+            $this->sent = true;
         }
     }
 
@@ -259,7 +269,7 @@ class StoryStatus extends Command
      */
     private function messageTwo($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName)
     {
-        if ($pageViews > 1000) {
+        if ($pageViews > 1000 && $this->sent == false) {
             $this->slackClient->from($from)->attach([
                 'fallback' => $fallback,
                 'text'     => "Hey, " . $row[2] . ", your post " . $url . " has already gotten about `" . $row['pageviews'] . "` pageviews. " . $niceThings[array_rand($niceThings,
@@ -282,6 +292,7 @@ class StoryStatus extends Command
                 'timestamp'   => new \DateTime(),
             ])->to('#trafficcop')->send($appName);
 
+            $this->sent = true;
         }
     }
 
@@ -300,7 +311,7 @@ class StoryStatus extends Command
      */
     private function messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName)
     {
-        if ($pageViews > 50 && $pageViews < 1000) {
+        if ($pageViews > 50 && $pageViews < 1000 && $this->sent == false) {
             $this->slackClient->from($from)->attach([
                 'fallback'    => $fallback,
                 'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image? \n\n" . $links,
@@ -319,6 +330,7 @@ class StoryStatus extends Command
                 'timestamp'   => new \DateTime(),
             ])->to('#trafficcop')->send($appName);
 
+            $this->sent = true;
         }
     }
 
@@ -348,6 +360,7 @@ class StoryStatus extends Command
             'timestamp'   => new \DateTime(),
         ])->to('#trafficcop')->send($appName);
 
+        $this->sent = true;
     }
 }
 
