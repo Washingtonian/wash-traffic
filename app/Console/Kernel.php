@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
              ->hourly()->timezone('America/New_York');
          $schedule->command('story:notify')
              ->weekdays()
-             ->dailyAt('9:00')
+             ->dailyAt('15:00')
              ->timezone('America/New_York');
     }
 

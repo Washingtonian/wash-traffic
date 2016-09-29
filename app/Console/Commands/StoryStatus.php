@@ -85,7 +85,7 @@ class StoryStatus extends Command
 
             list($row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel) = $this->initVars($row, $current);
 
-            if ($hours > 48) {
+            if ($hours > 48 || $hours < 24) {
                 continue;
             }
 
