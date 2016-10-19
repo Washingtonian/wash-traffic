@@ -83,7 +83,7 @@ class StoryStatus extends Command
 
         foreach ($sorted as $row) {
 
-            list($row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel) = $this->initVars($row, $current);
+            list($row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel, $suggestions) = $this->initVars($row, $current);
 
             if ($hours > 48 || $hours < 24) {
                 continue;
@@ -93,7 +93,7 @@ class StoryStatus extends Command
 
             $this->messageTwo($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
 
-            $this->messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
+            $this->messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName, $suggestions);
 
             //$this->messageDebug($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName);
             $this->sent = false;
@@ -204,14 +204,39 @@ class StoryStatus extends Command
             "Out of the park!",
             "We're over the moon!",
         ];
-        $shareTwitter     = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
-        $shareFacebook    = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
-        $links            = $shareTwitter . " | " . $shareFacebook;
-        $userOrChannel    = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#trafficcop';
+
+        $suggestions = [
+            "Any tweaks you can make to the headline or share image?",
+            "Try submitting it to Digg.",
+            "Want to try sending the link to an editor at another publication?",
+            "Are there any relevant blogs that might be willing to link to it?",
+            "Could you share it on Facebook?",
+            "Could you link to it from another relevant story?",
+            "Anything you can add to the story that will help seal the deal for readers?",
+            "Does the headline tell enough of the story--or too much of the story?",
+            "Does it have a strong featured image?",
+            "Would you click the link if you saw it on another site? Anything you can do to juice it up?",
+            "Anything you can cut to make it punchier?",
+            "Does it get to the point quickly enough?",
+            "Is there a more controversial angle you could take?",
+            "Does the story have enough conflict?",
+            "Was the story surprising for readers?",
+            "Any personalities you can @ on Twitter?",
+            "Think Drudge would take it?",
+            "Any subreddits that would be interested?",
+            "Does it solve a problem for the reader?",
+            "Any juicy details you could add?",
+            "Can you simplify the headline? (How would you describe the story to a friend?)",
+        ];
+
+        $shareTwitter  = "<https://twitter.com/home?status=" . urlencode($pageTitle) . " https://www.washingtonian.com" . $row[0] . " via @washingtonian|Share on Twitter>";
+        $shareFacebook = "<https://www.facebook.com/sharer/sharer.php?u=https://www.washingtonian.com" . $row[0] . "|Share on Facebook>";
+        $links         = $shareTwitter . " | " . $shareFacebook;
+        $userOrChannel = in_array($row[2], array_keys($slackUsernames)) ? '@' . $slackUsernames[$row[2]] : '#trafficcop';
 
         //$userOrChannel = '#webonauts-';
 
-        return [$row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel];
+        return [$row, $hours, $pageViews, $url, $fallback, $appName, $niceThings, $reallyNiceThings, $links, $userOrChannel, $suggestions];
     }
 
 
@@ -309,12 +334,13 @@ class StoryStatus extends Command
      * @param $userOrChannel
      * @param $appName
      */
-    private function messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName)
+    private function messageThree($hours, $pageViews, $from, $fallback, $row, $url, $niceThings, $links, $userOrChannel, $appName, $suggestions)
     {
         if ($pageViews > 50 && $pageViews < 1000 && $this->sent == false) {
             $this->slackClient->from($from)->attach([
                 'fallback'    => $fallback,
-                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image? \n\n" . $links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. `. " . $suggestions[array_rand($suggestions,
+                        1)] . " \n\n" . $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
