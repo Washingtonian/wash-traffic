@@ -339,7 +339,7 @@ class StoryStatus extends Command
         if ($pageViews > 50 && $pageViews < 1000 && $this->sent == false) {
             $this->slackClient->from($from)->attach([
                 'fallback'    => $fallback,
-                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. `. " . $suggestions[array_rand($suggestions,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. " . $suggestions[array_rand($suggestions,
                         1)] . " \n\n" . $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team - 3',
@@ -349,7 +349,8 @@ class StoryStatus extends Command
 
             $this->slackClient->from($from)->attach([
                 'fallback'    => $fallback,
-                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. Any tweaks you can make to the headline or share image? \n\n" . $links,
+                'text'        => "Hey, " . $row[2] . ", your post " . $url . " is `" . $hours . "` hours old and has gotten about `" . $row['pageviews'] . "` pageviews. " . $suggestions[array_rand($suggestions,
+                        1)] . " \n\n" . $links,
                 "mrkdwn_in"   => ["text", "pretext"],
                 'footer'      => 'Washingtonian Web Team - 3',
                 'footer_icon' => 'https://emoji.slack-edge.com/T03GDG7JA/washingtonian/998ab1a169101f53.png',
