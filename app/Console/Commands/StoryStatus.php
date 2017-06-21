@@ -52,7 +52,7 @@ class StoryStatus extends Command
             'allow_markdown'          => true,
             'markdown_in_attachments' => ['*', '`', '_', '~'],
         ];
-        $this->slackClient = new Client('https://hooks.slack.com/services/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', $settings);
+        $this->slackClient = new Client(getenv('slack_url), $settings);
 
         parent::__construct();
     }
