@@ -17,7 +17,6 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         StoryStatus::class,
-        AlgoliaWeddingIndex::class,
     ];
 
 
@@ -30,8 +29,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('index:weddings')
-             ->hourly()->timezone('America/New_York');
          $schedule->command('story:notify')
              ->weekdays()
              ->dailyAt('15:00')
